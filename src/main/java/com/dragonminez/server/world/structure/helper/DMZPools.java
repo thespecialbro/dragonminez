@@ -36,6 +36,7 @@ public class DMZPools {
 		Holder<StructureTemplatePool> empty = context.lookup(Registries.TEMPLATE_POOL).getOrThrow(Pools.EMPTY);
 		HolderGetter<StructureProcessorList> processors = context.lookup(Registries.PROCESSOR_LIST);
 		Holder<StructureProcessorList> foundation = processors.getOrThrow(DMZProcessorLists.FOUNDATION);
+		Holder<StructureProcessorList> submergedFoundation = processors.getOrThrow(DMZProcessorLists.SUBMERGED_FOUNDATION);
 
 		context.register(GOKU_HOUSE, new StructureTemplatePool(
 				empty,
@@ -45,7 +46,7 @@ public class DMZPools {
 
 		context.register(ROSHI_HOUSE, new StructureTemplatePool(
 				empty,
-				ImmutableList.of(Pair.of(StructurePoolElement.single("dragonminez:roshi_house", foundation), 1)),
+				ImmutableList.of(Pair.of(StructurePoolElement.single("dragonminez:roshi_house", submergedFoundation), 1)),
 				StructureTemplatePool.Projection.RIGID
 		));
 

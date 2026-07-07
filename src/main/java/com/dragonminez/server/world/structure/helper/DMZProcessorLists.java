@@ -1,6 +1,7 @@
 package com.dragonminez.server.world.structure.helper;
 
 import com.dragonminez.Reference;
+import com.dragonminez.server.world.structure.processor.DewaterlogProcessor;
 import com.dragonminez.server.world.structure.processor.FoundationProcessor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -11,11 +12,16 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import java.util.List;
 
 public class DMZProcessorLists {
-	public static final ResourceKey<StructureProcessorList> FOUNDATION = createKey("foundation");
+	public static final ResourceKey<StructureProcessorList> FOUNDATION = createKey("foundation"),
+			SUBMERGED_FOUNDATION = createKey("submerged_foundation");
 
 	public static void bootstrap(BootstapContext<StructureProcessorList> context) {
 		context.register(FOUNDATION, new StructureProcessorList(List.of(
 				new FoundationProcessor(32)
+		)));
+		context.register(SUBMERGED_FOUNDATION, new StructureProcessorList(List.of(
+				new FoundationProcessor(32, 6),
+				DewaterlogProcessor.INSTANCE
 		)));
 	}
 

@@ -31,10 +31,22 @@ public class StructurePlanSavedData extends SavedData {
 	}
 
 	public void setResolved(Map<Integer, ChunkPos> resolvedPositions) {
-		this.positions.clear();
-		if (resolvedPositions != null) this.positions.putAll(resolvedPositions);
+		replacePositions(resolvedPositions);
 		this.resolved = true;
 		setDirty();
+	}
+
+	public void clearResolved() {
+		if (!resolved) return;
+		this.resolved = false;
+		setDirty();
+	}
+
+	public void replacePositions(Map<Integer, ChunkPos> resolvedPositions) {
+		this.positions.clear();
+		if (resolvedPositions != null) {
+			this.positions.putAll(resolvedPositions);
+		}
 	}
 
 	public static StructurePlanSavedData load(CompoundTag tag) {

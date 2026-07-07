@@ -14,6 +14,9 @@ public class MainStructureProcessors {
 	public static final RegistryObject<StructureProcessorType<FoundationProcessor>> FOUNDATION =
 			PROCESSORS.register("foundation", () -> () -> FoundationProcessor.CODEC);
 
+	public static final RegistryObject<StructureProcessorType<DewaterlogProcessor>> DEWATERLOG =
+			PROCESSORS.register("dewaterlog", () -> () -> DewaterlogProcessor.CODEC);
+
 	public static void register(IEventBus eventBus) {
 		PROCESSORS.register(eventBus);
 	}

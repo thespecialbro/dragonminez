@@ -2,6 +2,7 @@ package com.dragonminez.server.world.structure.helper;
 
 import com.dragonminez.server.world.structure.placement.BiomeAwareUniquePlacement;
 import com.dragonminez.server.world.structure.placement.FixedStructurePlacement;
+import com.dragonminez.server.world.structure.placement.StructureSpawnPlanner;
 import com.dragonminez.server.world.structure.placement.UniqueNearSpawnPlacement;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
@@ -39,6 +40,10 @@ public class StructureLocator {
 		}
 		if (placements.isEmpty()) {
 			return null;
+		}
+
+		if (usesCustomPlacement(level, structureKey)) {
+			StructureSpawnPlanner.awaitPlanReady(level);
 		}
 
 		BlockPos best = null;

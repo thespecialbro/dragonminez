@@ -61,7 +61,7 @@ public class DMZStructures {
 				),
 				pools.getOrThrow(DMZPools.ROSHI_HOUSE),
 				1,
-				ConstantHeight.of(VerticalAnchor.absolute(1)),
+				ConstantHeight.of(VerticalAnchor.absolute(-1)),
 				false,
 				Heightmap.Types.WORLD_SURFACE_WG
 		));

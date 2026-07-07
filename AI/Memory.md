@@ -110,6 +110,18 @@ Use this schema for each memory entry:
 
 Add durable memories below this line, newest first.
 
+### 2026-07-07 - Structure Placement Biomes Come From Structure Sets
+
+- Type: pitfall
+- Status: active
+- Source: debugging
+- Scope: `src/main/java/com/dragonminez/server/world/structure/placement/StructureSpawnPlanner.java`
+- Summary: `BiomeAwareUniquePlacement.valid_biomes` (from `DMZStructureSets`) is the only biome authority for unique-structure chunk search; `DMZStructures` `biomes()` (`#minecraft:is_overworld` for many story structures) is vanilla generation eligibility, not planner placement.
+- Guidance: When fixing locate/placement/backfill, filter and evaluate candidates with `placement.getValidBiomes()` only. Do not widen planner filters using `structure.biomes()` without explicit user approval. If a constraint must be relaxed, flag it per `.cursor/rules/change-communication.mdc`.
+- Do Not: Do not substitute `is_overworld` (or other broad structure biomes) for placement tags like `is_ocean` or `is_desertlike` just to make structures easier to find.
+- Verification: `roshi_house` plans only ocean chunks; `yamcha_house` only desert-like chunks; wrong-biome saved plans are stripped on world load and backfilled.
+- Related: `DMZStructureSets.java`, `DMZStructures.java`, `.cursor/rules/change-communication.mdc`
+
 ### 2026-05-27 - Contiguous Kill Objectives Track Together
 
 - Type: pitfall

@@ -30,6 +30,7 @@ public final class StructureAsyncResolver {
 			} catch (Throwable t) {
 				System.err.println("[DMZ] StructureAsyncResolver build failed: " + t.getMessage());
 				holder.publish(java.util.Collections.emptyMap());
+				holder.markReady();
 			}
 		});
 	}
@@ -40,6 +41,29 @@ public final class StructureAsyncResolver {
 		} catch (Throwable t) {
 			System.err.println("[DMZ] StructureAsyncResolver sync build failed: " + t.getMessage());
 			holder.publish(java.util.Collections.emptyMap());
+			holder.markReady();
+		}
+	}
+
+	static void buildBackfill(StructureSpawnPlanner.PlanHolder holder, java.util.Map<Integer, net.minecraft.world.level.ChunkPos> existing) {
+		COORDINATOR.submit(() -> {
+			try {
+				StructureSpawnPlanner.runBackfill(holder, existing, SEARCH_POOL);
+			} catch (Throwable t) {
+				System.err.println("[DMZ] StructureAsyncResolver backfill failed: " + t.getMessage());
+				holder.publish(existing);
+				holder.markReady();
+			}
+		});
+	}
+
+	static void buildBackfillSync(StructureSpawnPlanner.PlanHolder holder, java.util.Map<Integer, net.minecraft.world.level.ChunkPos> existing) {
+		try {
+			StructureSpawnPlanner.runBackfill(holder, existing, SEARCH_POOL);
+		} catch (Throwable t) {
+			System.err.println("[DMZ] StructureAsyncResolver sync backfill failed: " + t.getMessage());
+			holder.publish(existing);
+			holder.markReady();
 		}
 	}
 

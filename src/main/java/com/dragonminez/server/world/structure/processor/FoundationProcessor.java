@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -19,14 +20,24 @@ import java.util.List;
 import java.util.Map;
 
 public class FoundationProcessor extends StructureProcessor {
+	private static final int UNLIMITED_ANCHOR_LOCAL_Y = Integer.MAX_VALUE;
+
 	public static final Codec<FoundationProcessor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.intRange(1, 256).optionalFieldOf("max_depth", 32).forGetter(p -> p.maxDepth)
+			Codec.intRange(1, 256).optionalFieldOf("max_depth", 32).forGetter(p -> p.maxDepth),
+			Codec.intRange(0, 512).optionalFieldOf("max_anchor_local_y", UNLIMITED_ANCHOR_LOCAL_Y)
+					.forGetter(p -> p.maxAnchorLocalY)
 	).apply(instance, FoundationProcessor::new));
 
 	private final int maxDepth;
+	private final int maxAnchorLocalY;
 
 	public FoundationProcessor(int maxDepth) {
+		this(maxDepth, UNLIMITED_ANCHOR_LOCAL_Y);
+	}
+
+	public FoundationProcessor(int maxDepth, int maxAnchorLocalY) {
 		this.maxDepth = maxDepth;
+		this.maxAnchorLocalY = maxAnchorLocalY;
 	}
 
 	@Nullable
@@ -37,13 +48,36 @@ public class FoundationProcessor extends StructureProcessor {
 
 	@Override
 	public List<StructureBlockInfo> finalizeProcessing(ServerLevelAccessor level, BlockPos offset, BlockPos pos, List<StructureBlockInfo> originalInfos, List<StructureBlockInfo> processedInfos, StructurePlaceSettings settings) {
-		BoundingBox box = settings.getBoundingBox();
+		if (processedInfos.isEmpty()) {
+			return processedInfos;
+		}
+
+		// Jigsaw passes the chunk clip box here, not the structure template bounds.
+		BoundingBox clipBox = settings.getBoundingBox();
+
+		int structureMinY = Integer.MAX_VALUE;
+		for (StructureBlockInfo info : processedInfos) {
+			if (!isFoundationAnchor(info.state())) {
+				continue;
+			}
+			structureMinY = Math.min(structureMinY, info.pos().getY());
+		}
+		if (structureMinY == Integer.MAX_VALUE) {
+			return processedInfos;
+		}
 
 		Map<Long, StructureBlockInfo> lowestByColumn = new HashMap<>();
 		for (StructureBlockInfo info : processedInfos) {
-			if (info.state().isAir()) continue;
+			if (!isFoundationAnchor(info.state())) {
+				continue;
+			}
 			BlockPos p = info.pos();
-			if (box != null && !box.isInside(p)) continue;
+			if (clipBox != null && !clipBox.isInside(p)) {
+				continue;
+			}
+			if (localY(structureMinY, p) > this.maxAnchorLocalY) {
+				continue;
+			}
 
 			long column = ChunkPos.asLong(p.getX(), p.getZ());
 			StructureBlockInfo current = lowestByColumn.get(column);
@@ -51,7 +85,9 @@ public class FoundationProcessor extends StructureProcessor {
 				lowestByColumn.put(column, info);
 			}
 		}
-		if (lowestByColumn.isEmpty()) return processedInfos;
+		if (lowestByColumn.isEmpty()) {
+			return processedInfos;
+		}
 
 		BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 		int worldFloor = level.getMinBuildHeight();
@@ -70,6 +106,14 @@ public class FoundationProcessor extends StructureProcessor {
 			}
 		}
 		return processedInfos;
+	}
+
+	private static int localY(int structureMinY, BlockPos pos) {
+		return pos.getY() - structureMinY;
+	}
+
+	private static boolean isFoundationAnchor(BlockState state) {
+		return !state.isAir() && !state.is(Blocks.STRUCTURE_VOID) && !state.is(Blocks.JIGSAW);
 	}
 
 	@Override
