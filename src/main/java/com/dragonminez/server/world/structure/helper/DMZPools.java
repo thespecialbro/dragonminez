@@ -64,7 +64,7 @@ public class DMZPools {
 
 		context.register(KAMILOOKOUT, new StructureTemplatePool(
 				empty,
-				ImmutableList.of(Pair.of(StructurePoolElement.single("dragonminez:kamilookout"), 1)),
+				ImmutableList.of(Pair.of(StructurePoolElement.single("dragonminez:korin_lookout"), 1)),
 				StructureTemplatePool.Projection.RIGID
 		));
 

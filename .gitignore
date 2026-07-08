@@ -33,7 +33,8 @@ run-data
 
 # otros mas
 test
-generated
+**/generated
+*.log
 
 # Files from Forge MDK
 forge*changelog.txt

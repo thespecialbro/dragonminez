@@ -1,6 +1,7 @@
 package com.dragonminez.server.world.structure.helper;
 
 import com.dragonminez.Reference;
+import com.dragonminez.server.world.structure.DescendingJigsawStructure;
 import com.dragonminez.server.world.structure.TallJigsawStructure;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -14,6 +15,9 @@ public class MainStructureTypes {
 
 	public static final RegistryObject<StructureType<TallJigsawStructure>> TALL_JIGSAW =
 			STRUCTURE_TYPES.register("tall_jigsaw", () -> () -> TallJigsawStructure.CODEC);
+
+	public static final RegistryObject<StructureType<DescendingJigsawStructure>> DESCENDING_JIGSAW =
+			STRUCTURE_TYPES.register("descending_jigsaw", () -> () -> DescendingJigsawStructure.CODEC);
 
 	public static void register(IEventBus eventBus) {
 		STRUCTURE_TYPES.register(eventBus);

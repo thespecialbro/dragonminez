@@ -2,6 +2,7 @@ package com.dragonminez.server.world.structure.helper;
 
 import com.dragonminez.Reference;
 import com.dragonminez.common.init.MainTags;
+import com.dragonminez.server.world.structure.DescendingJigsawStructure;
 import com.dragonminez.server.world.structure.TallJigsawStructure;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -94,7 +95,7 @@ public class DMZStructures {
 				Heightmap.Types.WORLD_SURFACE_WG
 		));
 
-		context.register(KAMILOOKOUT, new JigsawStructure(
+		context.register(KAMILOOKOUT, new DescendingJigsawStructure(
 				new Structure.StructureSettings(
 						biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
 						Map.of(),
@@ -102,9 +103,14 @@ public class DMZStructures {
 						TerrainAdjustment.NONE
 				),
 				pools.getOrThrow(DMZPools.KAMILOOKOUT),
-				1,
-				ConstantHeight.of(VerticalAnchor.absolute(1)),
+				Optional.empty(),
+				ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "korin_lookout"),
+				ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "korin_pillar"),
+				Reference.MOD_ID + ":korin_pillars",
+				20,
+				UniformHeight.of(VerticalAnchor.absolute(260), VerticalAnchor.absolute(280)),
 				false,
+				160,
 				Heightmap.Types.WORLD_SURFACE_WG
 		));
 

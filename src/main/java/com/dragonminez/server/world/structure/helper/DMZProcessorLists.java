@@ -13,7 +13,8 @@ import java.util.List;
 
 public class DMZProcessorLists {
 	public static final ResourceKey<StructureProcessorList> FOUNDATION = createKey("foundation"),
-			SUBMERGED_FOUNDATION = createKey("submerged_foundation");
+			SUBMERGED_FOUNDATION = createKey("submerged_foundation"),
+			KORIN_PILLAR_FOUNDATION = createKey("korin_pillar_foundation");
 
 	public static void bootstrap(BootstapContext<StructureProcessorList> context) {
 		context.register(FOUNDATION, new StructureProcessorList(List.of(
@@ -22,6 +23,9 @@ public class DMZProcessorLists {
 		context.register(SUBMERGED_FOUNDATION, new StructureProcessorList(List.of(
 				new FoundationProcessor(32, 6),
 				DewaterlogProcessor.INSTANCE
+		)));
+		context.register(KORIN_PILLAR_FOUNDATION, new StructureProcessorList(List.of(
+				new FoundationProcessor(128, 6)
 		)));
 	}
 

@@ -1,0 +1,9 @@
+{
+  "processors": [
+    {
+      "processor_type": "dragonminez:foundation",
+      "max_depth": 128,
+      "max_anchor_local_y": 6
+    }
+  ]
+}
